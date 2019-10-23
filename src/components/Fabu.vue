@@ -26,6 +26,7 @@
         props:["people"],
         data(){
             return{
+                people1:[],
                 title:["未选人员","已选人员"],
                 mode: "transfer",
                 fromData:[
@@ -106,15 +107,18 @@
                 // console.log("toData:", toData);
                 this.toData = toData;
                 this.fromData = fromData;
-                this.people = [];
+                this.people1 = [];
                 for( let item of toData){
                     for( let item2 of item.children){
-                        this.people.push(item2.label);
-                        console.log(this.people);
+                        this.people1.push(item2.label);
+
 
                     }
 
+
                 }
+                // console.log(this.people1)
+                this.$emit('changepeople', this.people1)
                 // self.$emit('changepeople', this.people)
                 // console.log("obj:", obj);
             },
@@ -125,16 +129,18 @@
                 // console.log("fromData:", fromData);
                 // console.log("toData:", toData);
                 // console.log("obj:", obj);
-                this.people = [];
+                this.people1 = [];
                 this.toData = toData;
                 this.fromData = fromData;
                 for( let item of toData){
                     for( let item2 of item.children){
-                        this.people.push(item2.label)
-                        console.log(this.people)
+                        this.people1.push(item2.label)
+
                     }
 
                 }
+                // console.log(this.people1)
+                this.$emit('changepeople', this.people1)
             }
         },
         components:{ treeTransfer } // 注册

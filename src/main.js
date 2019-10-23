@@ -12,6 +12,9 @@ import Header from "./components/header"
 import MyMuban from "./components/myMuban"
 import Fabu from "./components/Fabu";
 import Recently from "./components/Recently";
+import Yitou from "./components/Yitou";
+import WeiTou from "./components/WeiTou";
+import MyFabu from "./components/MyFabu";
 
 Vue.use(ElementUI);
 Vue.use( CKEditor );
@@ -29,6 +32,9 @@ new Vue({
     "MyMuban":MyMuban,
     "Fabu":Fabu,
     "Recently":Recently,
+    "Yitou":Yitou,
+    "WeiTou":WeiTou,
+    "MyFabu":MyFabu,
   },
   template: '<App/>'
 })

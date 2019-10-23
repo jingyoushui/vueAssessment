@@ -8,18 +8,18 @@
     export default {
         name: 'ckeditor4',
         props: [
-            'value'],
+            'cktext'],
         mounted: function() {
             const self = this
 
             // 渲染编辑器
-            self.ckeditor = window.CKEDITOR.replace(self.id)
+            self.ckeditor = CKEDITOR.replace(self.id)
 
             // 设置初始内容
-            self.ckeditor.setData(self.value)
+            self.ckeditor.setData(self.cktext)
 
             // 监听内容变更事件
-            self.ckeditor.on('save', function() {
+            self.ckeditor.on('change', function() {
                 self.$emit('ckinput', self.ckeditor.getData())
             })
 
@@ -35,9 +35,9 @@
         },
         watch: {
             // 监听prop的变化，更新ckeditor中的值
-            value: function() {
-                if (this.value !== this.ckeditor.getData()) {
-                    this.ckeditor.setData(this.value)
+            cktext: function() {
+                if (this.cktext !== this.ckeditor.getData()) {
+                    this.ckeditor.setData(this.cktext)
                 }
             }
         },

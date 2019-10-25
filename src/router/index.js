@@ -5,6 +5,7 @@ import index from "../components/index";
 import Test from "../components/Test";
 import myMuban from "../components/myMuban";
 
+
 Vue.use(Router)
 
 export default new Router({

@@ -1,0 +1,270 @@
+<template>
+
+  <div>
+    <el-card class="box-card" style="width: 80%;margin-left: 10%;min-height: 150px;margin-top: 10px;" v-for="i in num"
+             :id="i">
+      <div>
+        <el-tag>{{i}}</el-tag>
+        <el-input
+          placeholder="请输入内容"
+          v-model="inputBT[i]"
+          clearable
+          style="width: 75%;">
+        </el-input>
+
+        <el-select v-model="value[i]" placeholder="请选择" style="width: 18%;float:right;">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+
+      </div>
+      <div style="width: 100%;height: 0;margin-top:5px;border: solid 0.5px lightgrey"></div>
+      <div v-if="value[i]=='input'" style="color: grey;margin-top: 20px;">
+        待填写者写入文本
+      </div>
+
+      <div v-if="value[i]=='InputNumber'" style="color: grey;margin-top: 20px;">
+        待填写者写入数字
+      </div>
+      <div class="radio" v-if="value[i]=='radio'" style="color: grey;margin-top: 20px;">
+
+        <div v-for="j in radionum[i]" :id="j">
+          ○
+          <el-input
+            placeholder="请输入选项名"
+            v-model="radioname[i][j]"
+            clearable
+            style="width: 80%;">
+          </el-input>
+
+        </div>
+        <div>
+          <el-button type="text" @click="addradio(i)"><i class="el-icon-circle-plus-outline"
+                                                         style="font-size: 20px;margin-top: 10px"></i></el-button>
+          <el-button type="text" @click="deleteradio(i)"><i class="el-icon-remove-outline"
+                                                            style="font-size: 20px;margin-top: 10px"></i></el-button>
+        </div>
+
+      </div>
+
+      <div class="radio" v-if="value[i]=='checkbox'" style="color: grey;margin-top: 20px;">
+
+        <div v-for="j in checkboxnum[i]" :id="j">
+          □
+          <el-input
+            placeholder="请输入选项名"
+            v-model="checkboxname[i][j]"
+            clearable
+            style="width: 80%;">
+          </el-input>
+
+        </div>
+        <div>
+          <el-button type="text" @click="addcheckbox(i)"><i class="el-icon-circle-plus-outline"
+                                                            style="font-size: 20px;margin-top: 10px"></i></el-button>
+          <el-button type="text" @click="deletecheckbox(i)"><i class="el-icon-remove-outline"
+                                                               style="font-size: 20px;margin-top: 10px"></i></el-button>
+        </div>
+
+      </div>
+      <div class="radio" v-if="value[i]=='select'" style="color: grey;margin-top: 20px;">
+
+        <div v-for="j in selectnum[i]" :id="j">
+          {{j}}、
+          <el-input
+            placeholder="请输入选项名"
+            v-model="selectname[i][j]"
+            clearable
+            style="width: 80%;">
+          </el-input>
+
+        </div>
+        <div>
+          <el-button type="text" @click="addselect(i)"><i class="el-icon-circle-plus-outline"
+                                                          style="font-size: 20px;margin-top: 10px"></i></el-button>
+          <el-button type="text" @click="deleteselect(i)"><i class="el-icon-remove-outline"
+                                                             style="font-size: 20px;margin-top: 10px"></i></el-button>
+        </div>
+
+      </div>
+
+
+    </el-card>
+    <div style="text-align: right;width:80%;margin-left: 10%;margin-top: 10px;">
+      <el-tooltip class="item" effect="light" content="添加新组件" placement="top">
+        <el-button type="text" @click="adddiv" style="font-size: 30px;"><i class="el-icon-circle-plus"></i></el-button>
+      </el-tooltip>
+
+      <el-tooltip class="item" effect="light" content="删除组件" placement="top">
+        <el-button type="text" @click="delectdiv" style="font-size: 30px;"><i class="el-icon-remove"></i></el-button>
+      </el-tooltip>
+
+
+    </div>
+    <div style="text-align: center;">
+      <el-button type="primary" @click="tijiao()">预览发布</el-button>
+    </div>
+
+    <div v-if="index==1">
+      <form-create v-model="yulanform" :rule="formrule" @on-submit="onSubmit1"></form-create>
+    </div>
+  </div>
+</template>
+
+<script>
+    export default {
+        name: "NewForm",
+        data() {
+            return {
+                index:0,
+                //卡片的个数
+                num: 1,
+                //输入框
+                inputBT: [],
+                //下拉选择框
+                options: [{
+                    value: 'input',
+                    label: '文本'
+                }, {
+                    value: 'InputNumber',
+                    label: '数字'
+                }, {
+                    value: 'radio',
+                    label: '单选按钮'
+                }, {
+                    value: 'checkbox',
+                    label: '多选按钮'
+                }, {
+                    value: 'select',
+                    label: '下拉选择'
+                }, {
+                    value: 'rate',
+                    label: '评分'
+                }],
+                value: [],
+                //单选按钮的选项个数
+                radionum: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+                //单选按钮名字
+                radioname: [[], [], [], [], [], [], [], [], [],],
+
+                //多选按钮的选项个数
+                checkboxnum: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+                //多选按钮名字
+                checkboxname: [[], [], [], [], [], [], [], [], [],],
+
+                //下拉框的选项个数
+                selectnum: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+                //下拉框名字
+                selectname: [[], [], [], [], [], [], [], [], [],],
+
+                //生成的表单规则
+                formrule:[],
+                //表单实例对象
+                yulanform:{},
+            }
+        },
+        methods: {
+            //增加组件
+            adddiv() {
+                // this.rule.push( {"type":"input","field":"goods","title":"商品名称","value":""},)
+                //  console.log(this.rule)
+                this.num += 1;
+
+
+            },
+            //删除组件
+            delectdiv() {
+                this.num -= 1;
+            },
+            //增加单选按钮选项
+            addradio(i) {
+                this.$set(this.radionum, i, this.radionum[i] + 1)
+                // this.radionum[i] +=1;
+
+            },
+            deleteradio(i) {
+                this.$set(this.radionum, i, this.radionum[i] - 1)
+            },
+
+            //增加多选按钮选项
+            addcheckbox(i) {
+                this.$set(this.checkboxnum, i, this.checkboxnum[i] + 1)
+                // this.radionum[i] +=1;
+
+            },
+            deletecheckbox(i) {
+                this.$set(this.checkboxnum, i, this.checkboxnum[i] - 1)
+            },
+
+            //增加下拉框选项
+            addselect(i) {
+                this.$set(this.selectnum, i, this.selectnum[i] + 1)
+                // this.radionum[i] +=1;
+
+            },
+            deleteselect(i) {
+                this.$set(this.selectnum, i, this.selectnum[i] - 1)
+            },
+
+            tijiao() {
+                console.log(this.inputBT)
+                console.log(this.value)
+                // console.log(this.radioname)
+                // console.log(this.checkboxname)
+                // console.log(this.selectname)
+                for(let i=1;i<this.inputBT.length;i++){
+                    console.log(this.value[i])
+
+                    if(this.value[i]=='radio'){
+
+                        console.log(this.radioname[i].length)//3
+
+                        this.formrule.push({
+                            type:this.value[i],
+                            field:this.inputBT[i],
+                            title:this.inputBT[i],
+                            options:[
+
+
+                            ],
+                        },)
+
+
+                    }else if(this.value[i]=='checkbox'){
+
+                    }else if(this.value[i]=='select'){
+
+                    }else {
+                        this.formrule.push({
+                            type:this.value[i],
+                            field:this.inputBT[i],
+                            title:this.inputBT[i]
+                        },)
+                        console.log(this.formrule)
+
+                    }
+                }
+                this.index=1;
+
+            },
+            onSubmit1(formData){
+                alert(JSON.stringify(formData));
+            },
+        }
+    }
+</script>
+
+<style>
+  .radio .el-input__inner {
+    width: 220px;
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 1px;
+    /*outline: medium;*/
+  }
+</style>

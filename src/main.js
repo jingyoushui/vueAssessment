@@ -15,6 +15,13 @@ import Recently from "./components/Recently";
 import Yitou from "./components/Yitou";
 import WeiTou from "./components/WeiTou";
 import MyFabu from "./components/MyFabu";
+import NewForm from "./components/NewForm";
+
+import formCreate from '@form-create/element-ui';
+
+
+
+Vue.use(formCreate);
 
 Vue.use(ElementUI);
 Vue.use( CKEditor );
@@ -35,6 +42,8 @@ new Vue({
     "Yitou":Yitou,
     "WeiTou":WeiTou,
     "MyFabu":MyFabu,
+    "NewForm":NewForm,
+
   },
   template: '<App/>'
 })

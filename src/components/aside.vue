@@ -1,5 +1,5 @@
 <template>
-  <el-aside width="200px" style="background-color: whitesmoke">
+  <el-aside width="200px" style="background-color:#545c64 ">
     <el-menu
       default-active="0"
       :default-openeds="['1', '3']"
@@ -38,17 +38,9 @@
       <el-submenu index="3">
         <template slot="title"><i class="el-icon-setting" style="color:whitesmoke;"></i>投票汇总</template>
         <el-menu-item-group>
-          <template slot="title">分组一</template>
-          <el-menu-item index="3-1">选项1</el-menu-item>
-          <el-menu-item index="3-2">选项2</el-menu-item>
+          <el-menu-item index="6">选项1</el-menu-item>
+          <el-menu-item index="7">选项2</el-menu-item>
         </el-menu-item-group>
-        <el-menu-item-group title="分组2">
-          <el-menu-item index="3-3">选项3</el-menu-item>
-        </el-menu-item-group>
-        <el-submenu index="3-4">
-          <template slot="title">选项4</template>
-          <el-menu-item index="3-4-1">选项4-1</el-menu-item>
-        </el-submenu>
       </el-submenu>
     </el-menu>
   </el-aside>

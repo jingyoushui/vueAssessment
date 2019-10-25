@@ -1,10 +1,28 @@
 <template>
-
   <div>
+<div v-if="index2==0">
+    <el-card class="box-card"  style="width: 80%;margin-left: 10%;min-height: 150px;margin-top: 10px;">
+      <div>
+
+      </div>
+      <el-input class="radio1"
+        placeholder="请输入表单主题"
+        v-model="title"
+        clearable
+        style="width: 100%;font-size: 28px;">
+      </el-input>
+      <el-input class="textarea"
+        type="textarea"
+        :rows="2"
+        placeholder="请输入表单描述"
+        v-model="miaoshu"
+        style="width: 100%;font-size: 16px;margin-top: 10px;">
+      </el-input>
+    </el-card>
     <el-card class="box-card" style="width: 80%;margin-left: 10%;min-height: 150px;margin-top: 10px;" v-for="i in num"
              :id="i">
       <div>
-        <el-tag>{{i}}</el-tag>
+        <el-tag >{{i}}</el-tag>
         <el-input
           placeholder="请输入内容"
           v-model="inputBT[i]"
@@ -108,11 +126,22 @@
     <div style="text-align: center;">
       <el-button type="primary" @click="tijiao()">预览发布</el-button>
     </div>
+  </div>
+  <div v-if="index2==1">
+    <div style="width: 80%;margin-left: 10%;margin-top: 10px;font-size: 28px;" v-html="title">
 
-    <div v-if="index==1">
-      <form-create v-model="yulanform" :rule="formrule" @on-submit="onSubmit1"></form-create>
+    </div>
+    <div style="width: 80%;margin-left: 10%;margin-top: 10px;font-size: 16px;" v-html="miaoshu">
+
+    </div>
+    <form-create v-model="yulanform" :rule="formrule" :option="option" @on-submit="onSubmit1" style="width: 80%;margin-top: 20px;"></form-create>
+
+    <div style="text-align: center;">
+      <el-button type="primary" @click="changeindex2(0)">返回修改</el-button>
+      <el-button type="primary" @click="changeindex(10)">立即发布</el-button>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -120,7 +149,9 @@
         name: "NewForm",
         data() {
             return {
-                index:0,
+                index2:0,
+                title:'',
+                miaoshu:'',
                 //卡片的个数
                 num: 1,
                 //输入框
@@ -165,6 +196,13 @@
                 formrule:[],
                 //表单实例对象
                 yulanform:{},
+
+                option:{
+                    submitBtn: {
+                        show: false,
+                    },
+
+                },
             }
         },
         methods: {
@@ -216,27 +254,75 @@
                 // console.log(this.radioname)
                 // console.log(this.checkboxname)
                 // console.log(this.selectname)
+                this.formrule=[];
                 for(let i=1;i<this.inputBT.length;i++){
                     console.log(this.value[i])
 
                     if(this.value[i]=='radio'){
 
-                        console.log(this.radioname[i].length)//3
+                        let h = (this.radioname[i].length)//3
+
+                        let options=[];
+                        for(let j =1;j<h;j++){
+                            options.push(
+                                {value:this.radioname[i][j],label:this.radioname[i][j]},
+                            )
+
+
+                        }
+
 
                         this.formrule.push({
                             type:this.value[i],
                             field:this.inputBT[i],
                             title:this.inputBT[i],
-                            options:[
+                            options:options,
 
-
-                            ],
                         },)
 
 
+
                     }else if(this.value[i]=='checkbox'){
+                        let h = (this.checkboxname[i].length)//3
+
+                        let options=[];
+                        for(let j =1;j<h;j++){
+                            options.push(
+                                {value:this.checkboxname[i][j],label:this.checkboxname[i][j]},
+                            )
+
+
+                        }
+
+
+                        this.formrule.push({
+                            type:this.value[i],
+                            field:this.inputBT[i],
+                            title:this.inputBT[i],
+                            options:options,
+
+                        },)
 
                     }else if(this.value[i]=='select'){
+                        let h = (this.selectname[i].length)//3
+
+                        let options=[];
+                        for(let j =1;j<h;j++){
+                            options.push(
+                                {value:this.selectname[i][j],label:this.selectname[i][j]},
+                            )
+
+
+                        }
+
+
+                        this.formrule.push({
+                            type:this.value[i],
+                            field:this.inputBT[i],
+                            title:this.inputBT[i],
+                            options:options,
+
+                        },)
 
                     }else {
                         this.formrule.push({
@@ -248,12 +334,19 @@
 
                     }
                 }
-                this.index=1;
+                this.index2=1;
+                console.log(this.formrule)
 
             },
             onSubmit1(formData){
                 alert(JSON.stringify(formData));
             },
+            changeindex2(msg){
+                this.index2=msg;
+            },
+            changeindex(msg){
+                this.$emit("NewIndex",msg)
+            }
         }
     }
 </script>
@@ -261,6 +354,22 @@
 <style>
   .radio .el-input__inner {
     width: 220px;
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 1px;
+    /*outline: medium;*/
+  }
+  .radio1 .el-input__inner {
+    width: 100%;
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 1px;
+    /*outline: medium;*/
+  }
+  .textarea .el-textarea__inner {
+    width: 100%;
     border-top-width: 0px;
     border-left-width: 0px;
     border-right-width: 0px;

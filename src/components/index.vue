@@ -40,11 +40,53 @@
         </el-main>
 
         <el-main v-if="index==6">
-          <NewForm></NewForm>
+          <NewForm v-on:NewIndex="change($event)"></NewForm>
 
         </el-main>
         <el-main v-if="index==7">
-          <form-create v-model="zidingyi" :rule="rule" @on-submit="onSubmit"></form-create>
+          <form-create v-model="zidingyi" :rule="rule" :option="option"  @mounted="mounted"></form-create>
+        </el-main>
+
+        <el-main v-if="index==10">
+          <Fabu v-bind:people="people" v-on:changepeople="changepeople($event)"></Fabu>
+          <div style="text-align: center;">
+            <el-button type="primary" @click="change(4)">上一步</el-button>
+            <el-button type="primary" @click="change(11)">下一步</el-button>
+          </div>
+        </el-main>
+
+        <el-main v-if="index==11">
+          <div style="width: 80%;padding-top: 20px;padding-left: 10%">
+            <span style="font-size: 20px;">为该投票命名</span>
+            <el-input
+              placeholder="请输入内容"
+              v-model="TPname"
+              clearable
+            >
+            </el-input>
+
+          </div>
+          <div style="width: 80%;padding-top: 20px;padding-left: 10%">
+            <span style="font-size: 20px;">设置该投票级别</span>
+            <div style="font-size: 14px;padding-top: 5px;color: gray;padding-bottom: 20px;">数值越大级别越高，</div>
+            <el-rate
+              v-model="jibie"
+              show-text
+              :texts=JBtext
+              @change="jibiechange()">
+            </el-rate>
+
+
+          </div>
+          <div style="width: 80%;padding-top: 20px;padding-left: 10%">
+            <span style="font-size: 20px;">设置前置条件</span>
+            <div style="font-size: 14px;padding-top: 5px;color: gray;padding-bottom: 20px;">设定启动“汇总测评情况”的前置条件，明确X%用户完成投票任务方可汇总情况。</div>
+            <el-slider v-model="value2" :format-tooltip="formatTooltip"></el-slider>
+          </div>
+          <div style="text-align: center;width: 80%;padding-top: 50px;padding-left: 10%">
+            <el-button type="primary" @click="change(10)">上一步</el-button>
+            <el-button type="primary" @click="change(13)">下一步</el-button>
+          </div>
         </el-main>
 
         <el-main v-if="index==12">
@@ -77,47 +119,7 @@
 
         </el-main>
 
-        <el-main v-if="index==10">
-          <Fabu v-bind:people="people" v-on:changepeople="changepeople($event)"></Fabu>
-          <div style="text-align: center;">
-            <el-button type="primary" @click="change(4)">上一步</el-button>
-            <el-button type="primary" @click="change(11)">下一步</el-button>
-          </div>
-        </el-main>
 
-        <el-main v-if="index==11">
-          <div style="width: 80%;padding-top: 20px;padding-left: 10%">
-            <span style="font-size: 20px;">为该投票命名</span>
-            <el-input
-              placeholder="请输入内容"
-              v-model="TPname"
-              clearable
-                    >
-            </el-input>
-
-          </div>
-          <div style="width: 80%;padding-top: 20px;padding-left: 10%">
-            <span style="font-size: 20px;">设置该投票级别</span>
-            <div style="font-size: 14px;padding-top: 5px;color: gray;padding-bottom: 20px;">数值越大级别越高，</div>
-            <el-rate
-              v-model="jibie"
-              show-text
-              :texts=JBtext
-            @change="jibiechange()">
-            </el-rate>
-
-
-          </div>
-          <div style="width: 80%;padding-top: 20px;padding-left: 10%">
-            <span style="font-size: 20px;">设置前置条件</span>
-            <div style="font-size: 14px;padding-top: 5px;color: gray;padding-bottom: 20px;">设定启动“汇总测评情况”的前置条件，明确X%用户完成投票任务方可汇总情况。</div>
-            <el-slider v-model="value2" :format-tooltip="formatTooltip"></el-slider>
-          </div>
-          <div style="text-align: center;width: 80%;padding-top: 50px;padding-left: 10%">
-            <el-button type="primary" @click="change(10)">上一步</el-button>
-            <el-button type="primary" @click="change(13)">下一步</el-button>
-          </div>
-        </el-main>
 
       </el-container>
     </el-container>
@@ -142,7 +144,7 @@
 
     // import { maker } from '@form-create/element-ui'
     export default {
-        name: 'app',
+
         data() {
             const item = {
                 date: '2019-10-22',
@@ -150,7 +152,9 @@
                 address: '上海市普陀区金沙江路 1518 弄'
             };
 
+
             return {
+
                 // screenHeight: document.body.clientHeight,
                 index :0,
                 //前置条件百分数初始值
@@ -173,10 +177,32 @@
 
 
 
+
                 //表单实例对象
                 zidingyi:{},
+                option:{
+                    submitBtn: {
+                        type: "primary",
+                        size: "small",
+                        plain: false,
+                        round: false,
+                        circle: false,
+                        loading: false,
+                        disabled: false,
+                        icon: 'el-icon-upload',
+                        width: '20%',
+                        textAlign:'center',
+                        autofocus: false,
+                        nativeType: "button",
+                        innerText: "提交111",
+                        show: true,
+                        col: undefined,
+                        click: undefined,
+                    },
+                },
                 //表单生成规则
                 rule:[
+
                     {
                         type:'input',
                         field:'goods_name',
@@ -216,20 +242,28 @@
                             {value:"4",label:"有效"},
                         ]
                     }
-                ]
+                ],
 
             };
         },
         components: {NewForm, MyFabu, WeiTou, Yitou, Recently, Fabu, MyMuban, Header, Aside, Ckeditor4},
         mounted() {
 
+
         },
 
 
         methods:{
 
-            onSubmit(formData){
-                alert(JSON.stringify(formData));
+
+
+
+            onSubmit:function (formData,fApi) {
+                fApi.btn.loading();
+            },
+            mounted: function($f){
+                //TODO
+                //TODO 表单创建成功,可在此操作表单
             },
             //改变index的值，就可以切换el-main的页面了
             change(msg){

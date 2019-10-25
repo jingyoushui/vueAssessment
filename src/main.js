@@ -45,5 +45,7 @@ new Vue({
     "NewForm":NewForm,
 
   },
+ 
+
   template: '<App/>'
 })

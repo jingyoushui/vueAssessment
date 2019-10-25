@@ -39,6 +39,14 @@
           <MyMuban v-bind:imgsrc="dataURL" v-bind:cktext="cktext"></MyMuban>
         </el-main>
 
+        <el-main v-if="index==6">
+          <NewForm></NewForm>
+
+        </el-main>
+        <el-main v-if="index==7">
+          <form-create v-model="zidingyi" :rule="rule" @on-submit="onSubmit"></form-create>
+        </el-main>
+
         <el-main v-if="index==12">
 <!--          <slot>中是ckeditor中的html,需要把它转换成图片显示出来比较直观-->
 
@@ -119,6 +127,7 @@
 
 <script>
     //import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
     import Ckeditor4 from "./ckeditor4";
     import Aside from "./aside";
     import Header from "./header";
@@ -129,6 +138,9 @@
     import Yitou from "./Yitou";
     import WeiTou from "./WeiTou";
     import MyFabu from "./MyFabu";
+    import NewForm from "./NewForm";
+
+    // import { maker } from '@form-create/element-ui'
     export default {
         name: 'app',
         data() {
@@ -137,6 +149,7 @@
                 name: '王小虎',
                 address: '上海市普陀区金沙江路 1518 弄'
             };
+
             return {
                 // screenHeight: document.body.clientHeight,
                 index :0,
@@ -158,15 +171,66 @@
                     "五级(发布者只能看汇总结果，其他人阅后即焚)"],
                 isshare:1,
 
+
+
+                //表单实例对象
+                zidingyi:{},
+                //表单生成规则
+                rule:[
+                    {
+                        type:'input',
+                        field:'goods_name',
+                        title:'商品名称'
+                    },
+                    {
+                        type:'datePicker',
+                        field:'created_at',
+                        title:'创建时间'
+                    },
+                    {
+                        type:"rate",
+                        field:"rate",
+                        title:"推荐级别",
+                        value:3.5,
+                        props:{
+                            max: 5,
+                            showText:true,
+                            texts:["一级(所有人都能看到其他人投票结果)","二级(除发布者可以看到所有人投票结果和汇总结果，其他人只能看到自己投票结果和汇总结果)",
+                                "三级(除发布者可以看到所有人投票结果和汇总结果，其他人只能看到自己投票结果)","四级(发布者只能看到汇总结果，其他人只能看到自己投票结果)",
+                                "五级(发布者只能看汇总结果，其他人阅后即焚)"],
+                        },
+
+                        validate:[
+                            {required:true,type:'number',min:2, message: '请大于2颗星',trigger:'change'}
+                        ]
+                    },
+                    {
+                        type:"checkbox",
+                        title:"标签",
+                        field:"label",
+                        value:["1","2","3"],
+                        options:[
+                            {value:"1",label:"好用"},
+                            {value:"2",label:"方便",disabled:false},
+                            {value:"3",label:"实用",disabled:false},
+                            {value:"4",label:"有效"},
+                        ]
+                    }
+                ]
+
             };
         },
-        components: {MyFabu, WeiTou, Yitou, Recently, Fabu, MyMuban, Header, Aside, Ckeditor4},
-        mounted () {
+        components: {NewForm, MyFabu, WeiTou, Yitou, Recently, Fabu, MyMuban, Header, Aside, Ckeditor4},
+        mounted() {
 
         },
 
 
         methods:{
+
+            onSubmit(formData){
+                alert(JSON.stringify(formData));
+            },
             //改变index的值，就可以切换el-main的页面了
             change(msg){
                 //新建模板时要把cktext内容清空，然后再跳转
@@ -178,6 +242,7 @@
                     msg=4
                 }
                 this.index = msg;
+
 
             },
             //推动条的值
@@ -196,27 +261,8 @@
             cksave(msg){
                 this.cktext = msg;
             },
+
             //转换图片
-            open1(msg){
-                this.$alert('私有：<input type="radio" checked="checked" name="share" value="0" />\n' +
-                    '<br />\n' +
-                    '共享：\n' +
-                    '<input type="radio" name="share" value="1" />', '选择模板类型', {
-                    dangerouslyUseHTMLString: true,
-
-                }).then(({value}) => {
-                    this.$message({
-                        type: 'success',
-                        message: value
-                    });
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
-                });
-
-            },
             toImage(msg) {
 
                 html2canvas(this.$refs.imageWrapper,{
@@ -255,4 +301,5 @@
     min-height: 600px;
     border: 1px solid #eee;
   }
+
 </style>

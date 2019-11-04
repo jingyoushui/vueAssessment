@@ -158,13 +158,16 @@
 <script>
     import html2canvas from "html2canvas";
     import qs from 'qs';
+
+
     export default {
-        name: "NewForm",
-        data() {
+        name: "AlterForm",
+        props: ["form1"],
+        data:function() {
             return {
                 //新保存模板id
                 mubanid:0,
-
+                list:null,
                 index2:0,
                 title:'',
                 miaoshu:'',
@@ -225,11 +228,26 @@
                 dataURL:"",
             }
         },
+        watch:{
+            form1:function() {
+                this.list = this.form1;
+                this.title = this.form1.title;
+                this.miaoshu = this.form1.miaoshu;
+                this.num = this.form1.num
+                this.inputBT = this.form1.inputbt
+                this.checkboxname = JSON.parse(this.form1.checkboxname)
+                this.checkboxnum = this.form1.checkboxnum.map(Number)
+                this.optiontype = this.form1.optiontype
+                this.radioname = JSON.parse(this.form1.radioname)
+                this.radionum = this.form1.radionum.map(Number)
+                this.selectname = JSON.parse(this.form1.selectname)
+                this.selectnum = this.form1.selectnum.map(Number)
+                this.mubanid = this.form1.id
+            }
+        },
         mounted(){
-            // this.bus.$on("myform",function (msg) {
-            //     console.log(msg)
-            //
-            // })
+
+
         },
         methods: {
             //增加组件
@@ -381,7 +399,7 @@
                 }).then((canvas) => {
                     let dataURL = canvas.toDataURL("image/png");
                     this.dataURL = dataURL;
-                    this.saveform()
+                    this.alterform()
 
                 });
                 // this.index = msg;
@@ -391,7 +409,7 @@
 
             },
             //保存表单信息
-            saveform(){
+            alterform(){
                 var parm = qs.stringify({
                     user:1,
                     title:this.title,
@@ -401,19 +419,17 @@
                     imageurl:this.dataURL,
                     type:0,
                 });
-                this.$axios.post("/local/addmuban",parm).then(resp=>{
-                    this.mubanid = resp.data.id
-                    console.log(this.mubanid)
-                    this.addform();
-                })
+                // this.$axios.post("/local/addmuban",parm).then(resp=>{
+                //     this.mubanid = resp.data.id
+                //     console.log(this.mubanid)
+                //     this.alterform();
+                // })
 
             },
             //增加表单的内容
-            addform(){
+            alterform(){
                 // console.log(this.inputBT)
                 var parm = qs.stringify({
-                    title : this.title,
-                    miaoshu:this.miaoshu,
                     id :this.mubanid,
                     num:this.num,
                     inputbt: (this.inputBT),
@@ -427,9 +443,9 @@
 
                 }, { indices: false });
                 console.log(this.radioname)
-                this.$axios.post("/local/addform",parm).then(res=>{
-
-                })
+                // this.$axios.post("/local/addform",parm).then(res=>{
+                //
+                // })
             },
             onSubmit1(formData){
                 alert(JSON.stringify(formData));

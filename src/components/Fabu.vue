@@ -39,7 +39,6 @@
                                 id: "1-1",
                                 pid: "1",
                                 label: "李白",
-                                children: []
                             },
                             {
                                 id: "1-2",
@@ -56,6 +55,7 @@
 
                         ]
                     },
+
                     {
                         id: "2",
                         pid: 0,
@@ -88,6 +88,9 @@
                 ],
                 toData:[]
             }
+        },
+        mounted(){
+            this.getbm()
         },
         methods:{
 
@@ -141,7 +144,47 @@
                 }
                 // console.log(this.people1)
                 this.$emit('changepeople', this.people1)
-            }
+            },
+            //获取部门信息
+            getbm(){
+                this.$axios.get("/local/getdmb").then(resp=>{
+                    var list = resp.data.list;
+                    console.log(list)
+                    list.map(function (l,index) {
+                        this.fromData.push({
+                            id: index,
+                            pid: 0,
+                            label: "民一庭",
+                            children: [
+                                {
+                                    id: "1-1",
+                                    pid: "1",
+                                    label: "李白",
+                                },
+                                {
+                                    id: "1-2",
+                                    pid: "1",
+                                    label: "杜甫",
+                                    children: []
+                                },
+                                {
+                                    id: "1-3",
+                                    pid: "1",
+                                    label: "苏轼",
+                                    children: []
+                                },
+
+                            ]
+                        },)
+                    })
+
+                })
+            },
+            //获取员工信息
+            getyg(){
+
+            },
+
         },
         components:{ treeTransfer } // 注册
     }

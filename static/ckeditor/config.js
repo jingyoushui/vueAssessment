@@ -10,7 +10,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.uiColor = '#AADC6E';
   config.toolbarCanCollapse = true;
   config.dialog_backgroundCoverColor = "#545c64"; //可设置参考
-  config.height = 450;
+  config.height = 350;
   config.removePlugins = 'elementspath,'; // 移除编辑器底部状态栏显示的元素路径和调整编辑器大小的按钮
   config.allowedContent = false; // 是否允许使用源码模式进行编辑
 

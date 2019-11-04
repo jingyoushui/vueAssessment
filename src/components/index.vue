@@ -27,24 +27,72 @@
           </div>
           <MyFabu v-on:change="change($event)"></MyFabu>
         </el-main>
+
         <el-main v-if="index==4">
-          <ckeditor4 v-bind:cktext="cktext" v-on:ckinput="cksave($event)" ></ckeditor4>
+          <div style="height: 30px;text-align: center;font-size: 24px;">选择一种模板格式</div>
+          <el-row style=" margin-top:40px;">
+            <el-col :span="8" v-for="(o, index) in createmuban"  :offset="(index+1)%4 == 1 ? 3 : 3" :key="index" style="margin-top: 8px">
+              <el-card :body-style="{ padding: '0px' }">
+                <!--        @contextmenu.prevent.native="openMenu($event)"用来设置右键菜单-->
+                <el-button type="text" @click="change(o.i)">
+                  <div style="background-color: #eee">
+
+                    <img v-bind:src="o.imgurl" class="image" height="250px;" width="100%;" >
+
+                 </div>
+                </el-button>
+                <div style="padding: 2px;background-color: #0576b7">
+                  <span style="color: white">{{o.title}}</span>
+                </div>
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-main>
+
+        <el-main v-if="index=='4-1'">
+          <el-button type="text" @click="back()"><i class="el-icon-back" style="font-size: 28px;color: grey"></i></el-button>
+          <el-card class="box-card"  style="width: 100%;min-height: 150px;margin-top: 10px;">
+            <div>
+
+            </div>
+            <el-input class="radio1"
+                      placeholder="请输入表单主题"
+                      v-model="title"
+                      clearable
+                      style="width: 100%;font-size: 28px;">
+            </el-input>
+            <el-input class="textarea"
+                      type="textarea"
+                      :rows="2"
+                      placeholder="请输入表单描述"
+                      v-model="miaoshu"
+                      style="width: 100%;font-size: 16px;margin-top: 10px;">
+            </el-input>
+          </el-card>
+          <el-card class="box-card"  style="width: 100%;min-height: 150px;margin-top: 10px;">
+            <ckeditor4 v-bind:cktext="cktext" v-on:ckinput="cksave($event)" ></ckeditor4>
+          </el-card>
+
           <div style="text-align: center; font-size: 14px ;padding-top:20px;background-color: white">
-            <el-button type="primary"  style="margin-right: 200px;background-color: #545c64" @click="change(12)">保存模板</el-button>
-            <el-button type="primary"  style="background-color: #545c64" @click="change(10)">立即发布</el-button>
+            <el-button type="primary" @click="change(12)">预览发布</el-button>
+<!--            <el-button type="primary"  style="margin-right: 200px;background-color: #545c64" @click="change(12)">保存模板</el-button>-->
+<!--            <el-button type="primary"  style="background-color: #545c64" @click="change(10)">立即发布</el-button>-->
           </div>
+        </el-main>
+        <el-main v-if="index=='4-2'">
+          <el-button type="text" @click="back()"><i class="el-icon-back" style="font-size: 28px;color: grey"></i></el-button>
+          <NewForm v-on:NewIndex="change($event)" ></NewForm>
+
         </el-main>
 <!--v-bind用于绑定传值，由MyMuban模板接收并使用-->
         <el-main v-if="index==5">
-          <MyMuban v-bind:imgsrc="dataURL" v-bind:cktext="cktext"></MyMuban>
+          <MyMuban></MyMuban>
         </el-main>
 
         <el-main v-if="index==6">
-          <NewForm v-on:NewIndex="change($event)"></NewForm>
 
         </el-main>
         <el-main v-if="index==7">
-          <form-create v-model="zidingyi" :rule="rule" :option="option"  @mounted="mounted"></form-create>
         </el-main>
 
         <el-main v-if="index==10">
@@ -92,14 +140,27 @@
         <el-main v-if="index==12">
 <!--          <slot>中是ckeditor中的html,需要把它转换成图片显示出来比较直观-->
 
+          <el-card class="box-card"  >
+            <div style="font-size: 25px;text-align: center">
+              {{title}}
+            </div>
+
+            <div style="color: grey;">
+              {{miaoshu}}
+            </div>
+          </el-card>
+
+          <el-card class="box-card" style="margin-top: 5px;"  >
           <div class="imageWrapper" ref="imageWrapper">
             <slot>
               <div v-html="cktext"></div>
             </slot>
           </div>
-          <div style="text-align: center;">
-            <el-button type="primary" @click="change(40)">返回修改</el-button>
-            <el-button type="primary" @click="toImage(5)">确定保存</el-button>
+          </el-card>
+          <div style="text-align: center;margin-top: 5px;">
+            <el-button type="primary" @click="change('4-1')">返回修改</el-button>
+            <el-button type="primary"  @click="change(10)">立即发布</el-button>
+            <el-button type="primary" @click="toImage()">保存模板</el-button>
           </div>
         </el-main>
 
@@ -141,6 +202,7 @@
     import WeiTou from "./WeiTou";
     import MyFabu from "./MyFabu";
     import NewForm from "./NewForm";
+    import qs from 'qs';
 
     // import { maker } from '@form-create/element-ui'
     export default {
@@ -155,6 +217,8 @@
 
             return {
 
+                //新保存模板id
+                mubanid:0,
                 // screenHeight: document.body.clientHeight,
                 index :0,
                 //前置条件百分数初始值
@@ -175,74 +239,13 @@
                     "五级(发布者只能看汇总结果，其他人阅后即焚)"],
                 isshare:1,
 
-
-
-
-                //表单实例对象
-                zidingyi:{},
-                option:{
-                    submitBtn: {
-                        type: "primary",
-                        size: "small",
-                        plain: false,
-                        round: false,
-                        circle: false,
-                        loading: false,
-                        disabled: false,
-                        icon: 'el-icon-upload',
-                        width: '20%',
-                        textAlign:'center',
-                        autofocus: false,
-                        nativeType: "button",
-                        innerText: "提交111",
-                        show: true,
-                        col: undefined,
-                        click: undefined,
-                    },
-                },
-                //表单生成规则
-                rule:[
-
-                    {
-                        type:'input',
-                        field:'goods_name',
-                        title:'商品名称'
-                    },
-                    {
-                        type:'datePicker',
-                        field:'created_at',
-                        title:'创建时间'
-                    },
-                    {
-                        type:"rate",
-                        field:"rate",
-                        title:"推荐级别",
-                        value:3.5,
-                        props:{
-                            max: 5,
-                            showText:true,
-                            texts:["一级(所有人都能看到其他人投票结果)","二级(除发布者可以看到所有人投票结果和汇总结果，其他人只能看到自己投票结果和汇总结果)",
-                                "三级(除发布者可以看到所有人投票结果和汇总结果，其他人只能看到自己投票结果)","四级(发布者只能看到汇总结果，其他人只能看到自己投票结果)",
-                                "五级(发布者只能看汇总结果，其他人阅后即焚)"],
-                        },
-
-                        validate:[
-                            {required:true,type:'number',min:2, message: '请大于2颗星',trigger:'change'}
-                        ]
-                    },
-                    {
-                        type:"checkbox",
-                        title:"标签",
-                        field:"label",
-                        value:["1","2","3"],
-                        options:[
-                            {value:"1",label:"好用"},
-                            {value:"2",label:"方便",disabled:false},
-                            {value:"3",label:"实用",disabled:false},
-                            {value:"4",label:"有效"},
-                        ]
-                    }
+                createmuban:[
+                    {imgurl:"../../static/img/ckeditor.png",title:"富文本编译器",i:"4-1"},
+                    {imgurl:"../../static/img/newform1.png",title: "自定义表单(推荐)",i:"4-2"}
                 ],
+                title:"",
+                miaoshu:"",
+
 
             };
         },
@@ -259,7 +262,7 @@
 
 
             onSubmit:function (formData,fApi) {
-                fApi.btn.loading();
+                alert(JSON.stringify(formData));
             },
             mounted: function($f){
                 //TODO
@@ -270,10 +273,8 @@
                 //新建模板时要把cktext内容清空，然后再跳转
                 if(msg==4){
                     this.cktext=""
-                }
-                //但是当返回修改的时候不能清空
-                if(msg==40){
-                    msg=4
+                    this.title=''
+                    this.miaoshu=''
                 }
                 this.index = msg;
 
@@ -297,23 +298,49 @@
             },
 
             //转换图片
-            toImage(msg) {
+            toImage() {
 
                 html2canvas(this.$refs.imageWrapper,{
-                    backgroundColor: "#eee"
+                    scale:2,
+                    logging: true, // 启用日志记录以进行调试 (发现加上对去白边有帮助)
+                    allowTaint: true, // 否允许跨源图像污染画布
+                    backgroundColor: null, // 解决生成的图片有白边
+                    useCORS: true // 如果截图的内容里有图片,解决文件跨域问题
                 }).then((canvas) => {
                     let dataURL = canvas.toDataURL("image/png");
                     this.dataURL = dataURL;
-                    console.log(this.dataURL)
+                    this.saveform();
 
                 });
-                this.index = msg;
+                // this.index = msg;
+                this.$message('模板保存成功,在已有模板中可以查看');
+
+            },
+            //保存数据到数据库
+            saveform(){
+                var parm = qs.stringify({
+                    user:1,
+                    title:this.title,
+                    miaoshu: this.miaoshu,
+                    content:JSON.stringify(this.cktext),
+                    isshare:1,
+                    imageurl:this.dataURL,
+                    type:1,//富文本形式
+                });
+                this.$axios.post("/local/addmuban",parm).then(resp=>{
+                    this.mubanid = resp.data.id
+                    console.log(this.mubanid)
+                })
 
             },
             //改变成员
             changepeople(msg){
                 this.people = msg
                 console.log(this.people)
+            },
+            //
+            back(){
+                this.index=4;
             }
 
         }
@@ -332,8 +359,24 @@
   }
   #container{
     /*max-height: 800px;*/
-    min-height: 600px;
+    min-height: 800px;
     border: 1px solid #eee;
+  }
+  .radio1 .el-input__inner {
+    width: 100%;
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 1px;
+    /*outline: medium;*/
+  }
+  .textarea .el-textarea__inner {
+    width: 100%;
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 1px;
+    /*outline: medium;*/
   }
 
 </style>

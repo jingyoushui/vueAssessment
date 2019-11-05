@@ -163,7 +163,7 @@
         data() {
             return {
                 //新保存模板id
-                mubanid:0,
+                mubanid:null,
 
                 index2:0,
                 title:'',
@@ -440,9 +440,6 @@
             changeindex(msg){
                 this.$emit("NewIndex",msg)
             },
-            // myform(list){
-            //     console.log("接到了")
-            // }
         }
     }
 </script>

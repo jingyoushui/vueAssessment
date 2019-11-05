@@ -9,7 +9,7 @@
       @addBtn='add'
       @removeBtn='remove'
       :mode='mode'
-      height='540px'
+      height='640px'
 
       filter openAll>
     </tree-transfer>
@@ -23,74 +23,27 @@
 
     export default {
         name:"Fabu",
-        props:["people"],
+        // props:["people"],
         data(){
             return{
+                //用于保存所选的用户名称
                 people1:[],
+                //用于保存所选的用户id
+                peopleid:[],
                 title:["未选人员","已选人员"],
                 mode: "transfer",
+                list2:[],
                 fromData:[
-                    {
-                        id: "1",
-                        pid: 0,
-                        label: "民一庭",
-                        children: [
-                            {
-                                id: "1-1",
-                                pid: "1",
-                                label: "李白",
-                            },
-                            {
-                                id: "1-2",
-                                pid: "1",
-                                label: "杜甫",
-                                children: []
-                            },
-                            {
-                                id: "1-3",
-                                pid: "1",
-                                label: "苏轼",
-                                children: []
-                            },
-
-                        ]
-                    },
-
-                    {
-                        id: "2",
-                        pid: 0,
-                        label: "民二庭",
-                        children: [
-                            {
-                                id: "2-1",
-                                pid: "2",
-                                label: "张三",
-                                children: []
-                            },
-                            {
-                                id: "2-2",
-                                pid: "2",
-                                label: "李四",
-                                children: []
-                            },
-                            {
-                                id: "2-3",
-                                pid: "2",
-                                label: "王五",
-                                children: []
-                            },
-
-                        ]
-                    },
-
-
 
                 ],
                 toData:[]
             }
         },
         mounted(){
-            this.getbm()
+            this.$nextTick(function(){
+                this.getbm()
+            })
+
         },
         methods:{
 
@@ -111,19 +64,21 @@
                 this.toData = toData;
                 this.fromData = fromData;
                 this.people1 = [];
+                this.peopleid = [];
                 for( let item of toData){
                     for( let item2 of item.children){
                         this.people1.push(item2.label);
+                        this.peopleid.push(item2.yhhm)
 
 
                     }
 
 
                 }
-                // console.log(this.people1)
-                this.$emit('changepeople', this.people1)
-                // self.$emit('changepeople', this.people)
-                // console.log("obj:", obj);
+                var people = [];
+                people.push({people:this.people1,peopleid:this.peopleid})
+                 // console.log(people)
+                this.$emit('changepeople', people)
             },
             // 监听穿梭框组件移除
             remove(fromData,toData,obj){
@@ -133,57 +88,63 @@
                 // console.log("toData:", toData);
                 // console.log("obj:", obj);
                 this.people1 = [];
+                this.peopleid = [];
                 this.toData = toData;
                 this.fromData = fromData;
                 for( let item of toData){
                     for( let item2 of item.children){
                         this.people1.push(item2.label)
+                        this.peopleid.push(item2.yhhm)
 
                     }
 
                 }
+                var people = [];
+                people.push(this.people1)
+                people.push(this.peopleid)
                 // console.log(this.people1)
-                this.$emit('changepeople', this.people1)
+                this.$emit('changepeople', people)
+
             },
+
             //获取部门信息
             getbm(){
-                this.$axios.get("/local/getdmb").then(resp=>{
+                var _this = this;
+                _this.$axios.get("/local/getdmb").then(resp=>{
                     var list = resp.data.list;
-                    console.log(list)
+                    // console.log(list)
                     list.map(function (l,index) {
-                        this.fromData.push({
-                            id: index,
-                            pid: 0,
-                            label: "民一庭",
-                            children: [
-                                {
-                                    id: "1-1",
-                                    pid: "1",
-                                    label: "李白",
-                                },
-                                {
-                                    id: "1-2",
-                                    pid: "1",
-                                    label: "杜甫",
-                                    children: []
-                                },
-                                {
-                                    id: "1-3",
-                                    pid: "1",
-                                    label: "苏轼",
-                                    children: []
-                                },
+                        let children = []
+                        //根据部门获取员工信息
+                         _this.$axios.get("/local/getYh?yhbm="+l.dmbh).then(res=>{
+                            var list2 = res.data.list;
+                            // console.log(list2)
 
-                            ]
-                        },)
+                            list2.map(function (l2,i) {
+                                children.push({
+                                    id:index+"-"+l2.yhbh,
+                                    pid:index+1,
+                                    label:l2.yhmc,
+                                    yhhm:l2.yhbh,
+                                },)
+                            })
+                            _this.fromData.push({
+                                id: index+1,
+                                pid: 0,
+                                label: l.dmms,
+                                children: children,
+                            },)
+                              // console.log(JSON.stringify(_this.fromData))
+                        })
+
+
                     })
 
+
                 })
-            },
-            //获取员工信息
-            getyg(){
 
             },
+
 
         },
         components:{ treeTransfer } // 注册

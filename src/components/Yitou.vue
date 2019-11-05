@@ -4,10 +4,10 @@
       我的投票
     </div>
     <span style="color: grey">已经投票</span>
-    <el-main style="height: 450px;margin-top: 20px;">
+    <el-main style="height: 650px;margin-top: 20px;">
       <el-table
         :data="tableData"
-        height="400"
+        height="600"
         style="width: 100%"
         :default-sort = "{prop: 'FBdate', order: 'descending'}">
         <el-table-column prop="id" label="id"   sortable width="100">

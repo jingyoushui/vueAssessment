@@ -15,8 +15,8 @@
         </el-card>
       </el-col>
     </el-row>
-    <el-main style="height: 350px;margin-top: 20px;">
-      <el-table :data="tableData"   height="300">
+    <el-main style="height: 550px;margin-top: 20px;">
+      <el-table :data="tableData"   height="500">
 
         <el-table-column prop="name" label="名称" width="420">
         </el-table-column>

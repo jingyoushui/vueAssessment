@@ -81,12 +81,12 @@
         </el-main>
         <el-main v-if="index=='4-2'">
           <el-button type="text" @click="back()"><i class="el-icon-back" style="font-size: 28px;color: grey"></i></el-button>
-          <NewForm v-on:NewIndex="change($event)" ></NewForm>
+          <NewForm v-on:NewIndex="change($event)" ref="newform"></NewForm>
 
         </el-main>
 <!--v-bind用于绑定传值，由MyMuban模板接收并使用-->
         <el-main v-if="index==5">
-          <MyMuban></MyMuban>
+          <MyMuban v-on:NewIndex="change($event)" ></MyMuban>
         </el-main>
 
         <el-main v-if="index==6">
@@ -96,24 +96,14 @@
         </el-main>
 
         <el-main v-if="index==10">
-          <Fabu v-bind:people="people" v-on:changepeople="changepeople($event)"></Fabu>
-          <div style="text-align: center;">
+          <Fabu  v-on:changepeople="changepeople($event)" ></Fabu>
+          <div style="text-align: center;padding-top: 10px;">
             <el-button type="primary" @click="change(4)">上一步</el-button>
             <el-button type="primary" @click="change(11)">下一步</el-button>
           </div>
         </el-main>
 
         <el-main v-if="index==11">
-          <div style="width: 80%;padding-top: 20px;padding-left: 10%">
-            <span style="font-size: 20px;">为该投票命名</span>
-            <el-input
-              placeholder="请输入内容"
-              v-model="TPname"
-              clearable
-            >
-            </el-input>
-
-          </div>
           <div style="width: 80%;padding-top: 20px;padding-left: 10%">
             <span style="font-size: 20px;">设置该投票级别</span>
             <div style="font-size: 14px;padding-top: 5px;color: gray;padding-bottom: 20px;">数值越大级别越高，</div>
@@ -168,13 +158,14 @@
           <div style="font-size: 20px;text-align: center">预览</div>
 
           <div v-html="cktext"></div>
-          <div style="font-size: 15px;">投票标题：{{TPname}}</div>
+<!--          <div style="font-size: 15px;">投票标题：{{TPname}}</div>-->
           <div style="font-size: 15px;">接收者： {{people}}</div>
-          <div style="font-size: 15px;" >级别：{{JBtext[parseInt(jibie)-1]}}</div>
+          <div style="font-size: 15px;">接收者id： {{peopleid}}</div>
+          <div style="font-size: 15px;" >级别：{{JBtext[parseInt(jibie)-1]}},{{jibie}}</div>
           <div style="font-size: 15px"> 前置条件：{{value2}}%</div>
           <div style="text-align: center;padding-top: 10px">
             <el-button type="primary" @click="change(11)">返回修改</el-button>
-            <el-button type="primary" @click="change()">确定发布</el-button>
+            <el-button type="primary" @click="publish()">确定发布</el-button>
           </div>
 
 
@@ -230,8 +221,9 @@
                 dataURL: '',
                 //选择接收的人员
                 people:[],
+                peopleid:[],
                 //投票的命名
-                TPname:'',
+                // TPname:'',
                 //设置投票级别
                 jibie:0,
                 JBtext:["一级(所有人都能看到其他人投票结果)","二级(除发布者可以看到所有人投票结果和汇总结果，其他人只能看到自己投票结果和汇总结果)",
@@ -335,13 +327,25 @@
             },
             //改变成员
             changepeople(msg){
-                this.people = msg
+                this.people = msg[0].people
                 console.log(this.people)
+                this.peopleid = msg[0].peopleid
+                console.log(this.peopleid)
             },
+
             //
             back(){
                 this.index=4;
-            }
+            },
+            //获取NewForm中的模板id
+            MuBanId(msg){
+                this.mubanid = msg;
+                console.log(this.mubanid)
+            },
+            //发布
+            publish(){
+               // this.$refs.newform.toImage();
+            },
 
         }
 
@@ -359,7 +363,7 @@
   }
   #container{
     /*max-height: 800px;*/
-    min-height: 800px;
+    min-height: 1000px;
     border: 1px solid #eee;
   }
   .radio1 .el-input__inner {

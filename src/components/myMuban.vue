@@ -10,7 +10,7 @@
       <li class="el-icon-delete" style="font-size: 17px;" @click="setdelect()"><span
         style="font-size: 14px;padding-left: 10px;">删除模板</span></li>
     </ul>
-    <div style="font-size: 18px ;padding-bottom: 20px" v-if="mubanlist!='[]'">
+    <div style="font-size: 18px ;padding-bottom: 20px" v-if="mubanlist!=[]">
       私有模板
     </div>
     <el-row>
@@ -35,7 +35,7 @@
       </el-col>
     </el-row>
 
-    <div style="font-size: 18px ;padding-bottom: 20px;padding-top: 20px;" v-if="mubanlist_share!='[]'">
+    <div style="font-size: 18px ;padding-bottom: 20px;padding-top: 20px;" v-if="mubanlist_share!=[]">
       共享模板
     </div>
     <el-row>
@@ -62,7 +62,7 @@
   </div>
     <div v-if="index3==1">
       <el-button type="text" @click="back()"><i class="el-icon-back" style="font-size: 28px;color: grey"></i></el-button>
-      <AlterForm v-bind:form1="list"></AlterForm>
+      <AlterForm v-bind:form1="list" v-on:changeIndex="changeindex($event)" ></AlterForm>
     </div>
   </div>
 </template>
@@ -182,6 +182,9 @@
                 this.$axios.post("/local/deleteMuban",parm).then(res=>{
 
                 })
+                this.$axios.post("/local/deleteform",parm).then(res=>{
+
+                })
             },
             getMuBanByUserAndNotshare(){
                 var url="/local/getmuban?user=1&isshare=0"
@@ -211,7 +214,12 @@
             },
             back(){
                 this.index3 = 0;
-            }
+            },
+            changeindex(msg){
+                this.$emit("NewIndex",msg)
+
+            },
+
 
 
         },

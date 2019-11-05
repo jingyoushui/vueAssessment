@@ -399,7 +399,7 @@
                 }).then((canvas) => {
                     let dataURL = canvas.toDataURL("image/png");
                     this.dataURL = dataURL;
-                    this.alterform()
+                    this.altermuban()
 
                 });
                 // this.index = msg;
@@ -409,8 +409,9 @@
 
             },
             //保存表单信息
-            alterform(){
+            altermuban(){
                 var parm = qs.stringify({
+                    id:this.mubanid,
                     user:1,
                     title:this.title,
                     miaoshu: this.miaoshu,
@@ -419,18 +420,17 @@
                     imageurl:this.dataURL,
                     type:0,
                 });
-                // this.$axios.post("/local/addmuban",parm).then(resp=>{
-                //     this.mubanid = resp.data.id
-                //     console.log(this.mubanid)
-                //     this.alterform();
-                // })
+                this.$axios.post("/local/altermuban",parm).then(resp=>{
+                    this.alterform();
+                })
 
             },
             //增加表单的内容
             alterform(){
-                // console.log(this.inputBT)
                 var parm = qs.stringify({
                     id :this.mubanid,
+                    title:this.title,
+                    miaoshu:this.miaoshu,
                     num:this.num,
                     inputbt: (this.inputBT),
                     optiontype: (this.optiontype),
@@ -443,9 +443,9 @@
 
                 }, { indices: false });
                 console.log(this.radioname)
-                // this.$axios.post("/local/addform",parm).then(res=>{
-                //
-                // })
+                this.$axios.post("/local/addform",parm).then(res=>{
+
+                })
             },
             onSubmit1(formData){
                 alert(JSON.stringify(formData));
@@ -454,7 +454,7 @@
                 this.index2=msg;
             },
             changeindex(msg){
-                this.$emit("NewIndex",msg)
+                this.$emit("changeIndex",msg)
             },
             // myform(list){
             //     console.log("接到了")

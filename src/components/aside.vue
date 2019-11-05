@@ -2,7 +2,7 @@
   <el-aside width="200px" style="background-color:#545c64 ">
     <el-menu
       default-active="0"
-      :default-openeds="['1', '3']"
+      :default-openeds="['1', '2','3']"
       class="el-menu-vertical-demo"
       @open="handleOpen"
       @close="handleClose"
